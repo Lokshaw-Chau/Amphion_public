@@ -188,9 +188,10 @@ class TTSTrainer(BaseTrainer):
             self.logger.info(
                 f"Resuming from checkpoint done in {(end - start) / 1e6:.2f}ms"
             )
-            self.checkpoints_path = json.load(
-                open(os.path.join(self.ckpt_path, "ckpts.json"), "r")
-            )
+            if not self.args.resume_type == "finetune":
+                self.checkpoints_path = json.load(
+                    open(os.path.join(self.ckpt_path, "ckpts.json"), "r")
+                )
 
     def _init_accelerator(self):
         self.exp_dir = os.path.join(

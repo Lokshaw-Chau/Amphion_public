@@ -187,7 +187,8 @@ class TTSDataset(BaseOfflineDataset):
 
         if cfg.preprocess.use_text or cfg.preprocess.use_phone:
             self.utt2seq = {}
-            for utt_info in self.metadata:
+            from tqdm import tqdm
+            for utt_info in tqdm(self.metadata):
                 dataset = utt_info["Dataset"]
                 uid = utt_info["Uid"]
                 utt = "{}_{}".format(dataset, uid)

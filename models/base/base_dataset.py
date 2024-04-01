@@ -297,6 +297,10 @@ class BaseOfflineCollator(object):
                 packed_batch_features["mask"] = pad_sequence(
                     masks, batch_first=True, padding_value=0
                 )
+            elif key == "prompt_len":
+                packed_batch_features["prompt_len"] = torch.LongTensor(
+                    [b["prompt_len"] for b in batch]
+                )
             elif key == "phone_len":
                 packed_batch_features["phone_len"] = torch.LongTensor(
                     [b["phone_len"] for b in batch]
@@ -315,7 +319,10 @@ class BaseOfflineCollator(object):
                     torch.ones((b["audio_len"], 1), dtype=torch.long) for b in batch
                 ]
             else:
-                values = [torch.from_numpy(b[key]) for b in batch]
+                if isinstance(batch[0][key], torch.Tensor):
+                    values = [b[key] for b in batch]
+                else:
+                    values = [torch.from_numpy(b[key]) for b in batch]
                 packed_batch_features[key] = pad_sequence(
                     values, batch_first=True, padding_value=0
                 )
